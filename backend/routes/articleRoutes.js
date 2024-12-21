@@ -20,4 +20,9 @@ router.post('/upload', auth, upload.single('media'), (req, res) => {
 router.post('/create', auth, admin, createArticle);
 router.delete('/:id', auth, admin, deleteArticle);
 
+const { getArticles } = require('../controllers/articleController');
+
+// Add this line to support fetching articles
+router.get('/', getArticles);
+
 module.exports = router;

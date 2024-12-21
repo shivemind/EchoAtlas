@@ -12,8 +12,17 @@ exports.createArticle = async (req, res) => {
 
 exports.getArticles = async (req, res) => {
     try {
-        const articles = await Article.find();
-        res.status(200).json(articles);
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10; // Number of articles per page
+        const skip = (page - 1) * limit;
+
+        const articles = await Article.find().skip(skip).limit(limit);
+        const totalArticles = await Article.countDocuments();
+
+        res.status(200).json({
+            articles,
+            hasMore: skip + limit < totalArticles, // Check if there are more articles
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
